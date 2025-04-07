@@ -1,0 +1,27 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Database Query</title>
+</head>
+<body>
+  <h1>Query the Database</h1>
+  <input type="text" id="query" placeholder="Enter your query" />
+  <button onclick="sendQuery()">Submit</button>
+  <pre id="result"></pre>
+
+  <script>
+    async function sendQuery() {
+      const query = document.getElementById("query").value;
+      const response = await fetch("https://your-backend-url.com/query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+      });
+      const data = await response.json();
+      document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
+
