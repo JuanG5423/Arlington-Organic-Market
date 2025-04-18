@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import psycopg2
 
@@ -27,7 +27,7 @@ def query():
         else:
             results = {"message": "Query executed successfully."}
         conn.commit()
-        return jsonify(results)
+        return render_template("index.html", result=results, cols=list(results[0].keys()))
     except Exception as e:
         conn.rollback()
         return jsonify({"error": str(e)}), 400

@@ -8,6 +8,18 @@
   <textarea rows="20" cols="50" id="query" placeholder="Enter your query"></textarea>
   <button onclick="sendQuery()">Submit</button>
   <pre id="result"></pre>
+  <table border="1">
+      <tr>
+        {% for i in cols %}
+          <th>{{i}}</th>
+        {% endfor %}
+      </tr>
+      <tr>
+        {% for i in cols %}
+          <td>{{result[i]}}</td>
+        {% endfor %}
+      </tr>
+    </table>
 
   <script>
     async function sendQuery() {
