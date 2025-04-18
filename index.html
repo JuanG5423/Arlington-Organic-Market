@@ -1,38 +1,25 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Database Query</title>
-</head>
-<body>
-  <h1>Query the Database</h1>
-  <textarea rows="20" cols="50" id="query" placeholder="Enter your query"></textarea>
-  <button onclick="sendQuery()">Submit</button>
-  <pre id="result"></pre>
-  <table border="1">
-      <tr>
-        {% for i in cols %}
-          <th>{{i}}</th>
-        {% endfor %}
-      </tr>
-      <tr>
-        {% for i in cols %}
-          <td>{{result[i]}}</td>
-        {% endfor %}
-      </tr>
-    </table>
-
-  <script>
-    async function sendQuery() {
-      const query = document.getElementById("query").value;
-      const response = await fetch("http://127.0.0.1:5000/query", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-      });
-      const data = await response.json();
-      document.getElementById("result").innerText = JSON.stringify(data, null, 2);
-    }
-  </script>
-</body>
-</html>
-
+ <html>
+ <head>
+   <title>Database Query</title>
+ </head>
+ <body>
+   <h1>Query the Database</h1>
+   <textarea rows="20" cols="50" id="query" placeholder="Enter your query"></textarea>
+   <button onclick="sendQuery()">Submit</button>
+   <pre id="result"></pre>
+ 
+   <script>
+     async function sendQuery() {
+       const query = document.getElementById("query").value;
+       const response = await fetch("http://127.0.0.1:5000/query", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({ query })
+       });
+       const data = await response.json();
+       document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+     }
+   </script>
+ </body>
+ </html>

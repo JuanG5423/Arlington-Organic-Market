@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import psycopg2
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app) 
@@ -27,7 +28,7 @@ def query():
         else:
             results = {"message": "Query executed successfully."}
         conn.commit()
-        return render_template("index.html", result=results, cols=list(results[0].keys()))
+        return jsonify(results)
     except Exception as e:
         conn.rollback()
         return jsonify({"error": str(e)}), 400
