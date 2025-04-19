@@ -1,3 +1,7 @@
+#Juan Guajardo Gutierrez - 1002128662
+#Ghiya El Daouk El Kadi - 1002165392
+
+
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import psycopg2
