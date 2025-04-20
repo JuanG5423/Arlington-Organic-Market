@@ -25,12 +25,19 @@
                 {% for key in data.item_list[0].keys() %}
                     <th>{{ key }}</th>
                 {% endfor %}
+                <th></th>
             </tr>
             {% for row in data.item_list %}
                 <tr>
                     {% for value in row.values() %}
                         <td>{{ value }}</td>
                     {% endfor %}
+                    <td>
+                        <form action="/delete_item" method="post" style="display: inline;">
+                            <input type="hidden" name="item_id" value="{{ row.iid }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
         </table>

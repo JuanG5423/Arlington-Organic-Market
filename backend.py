@@ -198,6 +198,11 @@ def link_vendor_item():
     finally:
         cur.close()
 
+@app.route("/delete_item", methods=["POST"])
+def delete_item():
+    item_id = request.form.get("item_id")
+    return f"Deleting {item_id}"
+
 if __name__ == "__main__":
     app.run(debug=True)
 
