@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- Juan Guajardo Gutierrez - 1002128662
+Ghiya El Daouk El Kadi - 1002165392 -->
  <html>
  <head>
    <title>Product Management</title>
@@ -97,83 +99,90 @@
    <br>
  </form>
 
-  <h2>Store Items:</h2>
-{% if data %}
-    {% if data.error %}
-        <p style="color:red">{{ data.error }}</p>
-    {% elif data.store_item_list %}
-        <table border="1" cellpadding="5">
-            <tr>
-                {% for key in data.store_item_list[0].keys() %}
-                    <th>{{ key }}</th>
-                {% endfor %}
-            </tr>
-            {% for row in data.store_item_list %}
-                <tr>
-                    {% for value in row.values() %}
-                        <td>{{ value }}</td>
+  <table width="100%">
+    <tr>
+      <td width="50%" valign="top">
+        <h2>Store Items:</h2>
+        {% if data %}
+            {% if data.error %}
+                <p style="color:red">{{ data.error }}</p>
+            {% elif data.store_item_list %}
+                <table border="1" cellpadding="5">
+                    <tr>
+                        {% for key in data.store_item_list[0].keys() %}
+                            <th>{{ key }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for row in data.store_item_list %}
+                        <tr>
+                            {% for value in row.values() %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
                     {% endfor %}
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>No store items to show.</p>
-    {% endif %}
-{% else %}
-    <p>No data to show.</p>
-{% endif %}
+                </table>
+            {% else %}
+                <p>No store items to show.</p>
+            {% endif %}
+        {% else %}
+            <p>No data to show.</p>
+        {% endif %}
+      </td>
+      <td width="50%" valign="top">
+        <h2>Vendor Stores:</h2>
+        {% if data %}
+            {% if data.error %}
+                <p style="color:red">{{ data.error }}</p>
+            {% elif data.vendor_store_list %}
+                <table border="1" cellpadding="5">
+                    <tr>
+                        {% for key in data.vendor_store_list[0].keys() %}
+                            <th>{{ key }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for row in data.vendor_store_list %}
+                        <tr>
+                            {% for value in row.values() %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>No vendor stores to show.</p>
+            {% endif %}
+        {% else %}
+            <p>No data to show.</p>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
 
-  <h2>Vendor Stores:</h2>
-{% if data %}
-    {% if data.error %}
-        <p style="color:red">{{ data.error }}</p>
-    {% elif data.vendor_store_list %}
-        <table border="1" cellpadding="5">
-            <tr>
-                {% for key in data.vendor_store_list[0].keys() %}
-                    <th>{{ key }}</th>
-                {% endfor %}
-            </tr>
-            {% for row in data.vendor_store_list %}
-                <tr>
-                    {% for value in row.values() %}
-                        <td>{{ value }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>No vendor stores to show.</p>
-    {% endif %}
-{% else %}
-    <p>No data to show.</p>
-{% endif %}
-
-<h2>Store Inventory:</h2>
-{% if data %}
-    {% if data.error %}
-        <p style="color:red">{{ data.error }}</p>
-    {% elif data.store_inventory_list %}
-        <table border="1" cellpadding="5">
-            <tr>
-                {% for key in data.store_inventory_list[0].keys() %}
-                    <th>{{ key }}</th>
-                {% endfor %}
-            </tr>
-            {% for row in data.store_inventory_list %}
-                <tr>
-                    {% for value in row.values() %}
-                        <td>{{ value }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>No vendor stores to show.</p>
-    {% endif %}
-{% else %}
-    <p>No data to show.</p>
-{% endif %}
+  <h2>Store Inventory:</h2>
+  {% if data %}
+      {% if data.error %}
+          <p style="color:red">{{ data.error }}</p>
+      {% elif data.store_inventory_list %}
+          <table border="1" cellpadding="5">
+              <tr>
+                  {% for key in data.store_inventory_list[0].keys() %}
+                      <th>{{ key }}</th>
+                  {% endfor %}
+              </tr>
+              {% for row in data.store_inventory_list %}
+                  <tr>
+                      {% for value in row.values() %}
+                          <td>{{ value }}</td>
+                      {% endfor %}
+                  </tr>
+              {% endfor %}
+          </table>
+      {% else %}
+          <p>No vendor stores to show.</p>
+      {% endif %}
+  {% else %}
+      <p>No data to show.</p>
+  {% endif %}
 
 <h1>Update Item Price</h1>
 <form action="/update_item_price" method="post" id="update_item_price_form">
@@ -185,7 +194,6 @@
 </form>
 
 <a href="index.html">Or directly query the database</a>
-
 
 </body>
 </html>

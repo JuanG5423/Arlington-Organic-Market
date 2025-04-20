@@ -1,3 +1,6 @@
+#Juan Guajardo Gutierrez - 1002128662
+#Ghiya El Daouk El Kadi - 1002165392
+
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_cors import CORS
 import psycopg2
@@ -50,7 +53,6 @@ def home():
         store_inventory_rows = cur.fetchall()
         store_inventory_list = [dict(zip(store_inventory_columns, row)) for row in store_inventory_rows]
 
-        # Ensure all are lists
         if not isinstance(item_list, list):
             item_list = []
         if not isinstance(vendor_list, list):
@@ -110,7 +112,6 @@ def query():
         else:
             results = {"message": "Query executed successfully."}
         conn.commit()
-        data = json.dumps(results)
         return redirect(url_for("index", data=json.dumps(results)))
     except Exception as e:
         conn.rollback()
@@ -165,7 +166,7 @@ def link_vendor_item():
     cur = conn.cursor()
     
     try:
-        #Verify the item and vendor exist
+        # Verify the item and vendor exist
         cur.execute("SELECT vId FROM VENDOR WHERE vId = %s", (vendor_id,))
         if not cur.fetchone():
             return render_template("product_management.html", 
@@ -180,10 +181,10 @@ def link_vendor_item():
                                      "item_list": [], 
                                      "vendor_list": []})
         
-        #Link the vendor to the store
+        # Link the vendor to the store
         sql = "INSERT INTO VENDOR_STORE (vId, sId) VALUES (%s, 1)"
         cur.execute(sql, (vendor_id,))
-        #Link the item to the store
+        # Link the item to the store
         sql = "INSERT INTO STORE_ITEM (sId, iId, Scount) VALUES (1, %s, %s)"
         cur.execute(sql, (item_id, item_count))
         conn.commit()
@@ -218,7 +219,6 @@ def delete_item():
         return redirect(url_for("home"))
         
     except Exception as e:
-        # Rollback on error
         conn.rollback()
         return render_template("product_management.html", 
                             data={"error": f"Error deleting item: {str(e)}", 
