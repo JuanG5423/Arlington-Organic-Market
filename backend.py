@@ -14,9 +14,13 @@ conn = psycopg2.connect(
     password="1234"
 )
 
-@app.route('/')
+@app.route("/")
+def home():
+    return render_template("product_management.html")
+
+@app.route("/index.html")
 def index():
-    data = request.args.get('data')
+    data = request.args.get("data")
     parsed_data = None
 
     if data:
@@ -25,13 +29,12 @@ def index():
         except Exception as e:
             parsed_data = {"error": f"Failed to parse data: {str(e)}"}
     print(parsed_data)
-    #return render_template('index.html', data=parsed_data)
-    return render_template("product_management.html")
+    return render_template("index.html", data=parsed_data)
 
 
-@app.route('/query', methods=['POST'])
+@app.route("/query", methods=["POST"])
 def query():
-    sql = request.form.get('query')
+    sql = request.form.get("query")
 
     cur = conn.cursor()
     try:
@@ -47,11 +50,11 @@ def query():
         return redirect(url_for("index", data=json.dumps(results)))
     except Exception as e:
         conn.rollback()
-        print('Error')
+        print("Error")
         return jsonify({"error": str(e)}), 400
     finally:
         cur.close()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
 
