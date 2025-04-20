@@ -14,22 +14,31 @@
   <h2>Results:</h2>
   {% if data %}
       {% if data is iterable and data is not string %}
-          <ul>
-              {% for row in data %}
-                  <li>
-                      <ul>
-                          {% for key, value in row.items() %}
-                              <li><strong>{{ key }}:</strong> {{ value }}</li>
+          {% if data|length > 0 %}
+              <table border="1" cellpadding="5">
+                  <tr>
+                      {% for key in data[0].keys() %}
+                          <th>{{ key }}</th>
+                      {% endfor %}
+                  </tr>
+                  {% for row in data %}
+                      <tr>
+                          {% for value in row.values() %}
+                              <td>{{ value }}</td>
                           {% endfor %}
-                      </ul>
-                  </li>
-              {% endfor %}
-          </ul>
+                      </tr>
+                  {% endfor %}
+              </table>
+          {% else %}
+              <p>No rows returned.</p>
+          {% endif %}
       {% else %}
           <p>{{ data }}</p>
       {% endif %}
   {% else %}
       <p>No data returned.</p>
   {% endif %}
+
+<a href="/">Product Management</a>
 </body>
 </html>
