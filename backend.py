@@ -1,11 +1,8 @@
-#Juan Guajardo Gutierrez - 1002128662
-#Ghiya El Daouk El Kadi - 1002165392
-
-
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_cors import CORS
 import psycopg2
 import pandas as pd
+import json
 
 app = Flask(__name__)
 CORS(app) 
@@ -17,10 +14,24 @@ conn = psycopg2.connect(
     password="1234"
 )
 
+@app.route('/')
+def index():
+    data = request.args.get('data')
+    parsed_data = None
+
+    if data:
+        try:
+            parsed_data = json.loads(data)
+        except Exception as e:
+            parsed_data = {"error": f"Failed to parse data: {str(e)}"}
+    print(parsed_data)
+    #return render_template('index.html', data=parsed_data)
+    return render_template("product_management.html")
+
+
 @app.route('/query', methods=['POST'])
 def query():
-    data = request.get_json()
-    sql = data.get('query')
+    sql = request.form.get('query')
 
     cur = conn.cursor()
     try:
@@ -32,9 +43,11 @@ def query():
         else:
             results = {"message": "Query executed successfully."}
         conn.commit()
-        return jsonify(results)
+        data = json.dumps(results)
+        return redirect(url_for("index", data=json.dumps(results)))
     except Exception as e:
         conn.rollback()
+        print('Error')
         return jsonify({"error": str(e)}), 400
     finally:
         cur.close()
