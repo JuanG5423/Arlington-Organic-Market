@@ -116,6 +116,47 @@ def add_vendor():
         cur.close()
     return redirect(url_for("home"))
 
+@app.route("/link_vendor_item", methods=["POST"])
+def link_vendor_item():
+    vendor_id = request.form.get("vendor_id")
+    item_id = request.form.get("item_id")
+    item_count = request.form.get("item_count")
+    cur = conn.cursor()
+    
+    try:
+        #Verify the item and vendor exist
+        cur.execute("SELECT vId FROM VENDOR WHERE vId = %s", (vendor_id,))
+        if not cur.fetchone():
+            return render_template("product_management.html", 
+                                data={"error": "Vendor not found", 
+                                     "item_list": [], 
+                                     "vendor_list": []})
+            
+        cur.execute("SELECT iId FROM ITEM WHERE iId = %s", (item_id,))
+        if not cur.fetchone():
+            return render_template("product_management.html", 
+                                data={"error": "Item not found", 
+                                     "item_list": [], 
+                                     "vendor_list": []})
+        
+        #Link the vendor to the store
+        sql = "INSERT INTO VENDOR_STORE (vId, sId) VALUES (%s, 1)"
+        cur.execute(sql, (vendor_id,))
+        #Link the item to the store
+        sql = "INSERT INTO STORE_ITEM (sId, iId, Scount) VALUES (1, %s, %s)"
+        cur.execute(sql, (item_id, item_count))
+        conn.commit()
+        return redirect(url_for("home"))
+        
+    except Exception as e:
+        conn.rollback()
+        return render_template("product_management.html", 
+                            data={"error": str(e), 
+                                 "item_list": [], 
+                                 "vendor_list": []})
+    finally:
+        cur.close()
+
 if __name__ == "__main__":
     app.run(debug=True)
 
