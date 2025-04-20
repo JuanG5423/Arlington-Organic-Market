@@ -19,24 +19,65 @@ conn = psycopg2.connect(
 def home():
     cur = conn.cursor()
     try:
+        # Get ITEM data
         cur.execute("SELECT * FROM ITEM")
         item_columns = [desc[0] for desc in cur.description]
         item_rows = cur.fetchall()
         item_list = [dict(zip(item_columns, row)) for row in item_rows]
 
+        # Get VENDOR data
         cur.execute("SELECT * FROM VENDOR")
         vendor_columns = [desc[0] for desc in cur.description]
         vendor_rows = cur.fetchall()
         vendor_list = [dict(zip(vendor_columns, row)) for row in vendor_rows]
 
+        # Get STORE_ITEM data
+        cur.execute("SELECT * FROM STORE_ITEM")
+        store_item_columns = [desc[0] for desc in cur.description]
+        store_item_rows = cur.fetchall()
+        store_item_list = [dict(zip(store_item_columns, row)) for row in store_item_rows]
+
+        # Get VENDOR_STORE data
+        cur.execute("SELECT * FROM VENDOR_STORE")
+        vendor_store_columns = [desc[0] for desc in cur.description]
+        vendor_store_rows = cur.fetchall()
+        vendor_store_list = [dict(zip(vendor_store_columns, row)) for row in vendor_store_rows]
+
+        # Get store inventory data
+        cur.execute('''SELECT ITEM.iname AS "Item Name", ITEM.sprice AS "Price", STORE_ITEM.scount AS "Amount in Stock"
+                    FROM STORE_ITEM JOIN ITEM ON STORE_ITEM.iid = ITEM.iid''')
+        store_inventory_columns = [desc[0] for desc in cur.description]
+        store_inventory_rows = cur.fetchall()
+        store_inventory_list = [dict(zip(store_inventory_columns, row)) for row in store_inventory_rows]
+
+        # Ensure all are lists
         if not isinstance(item_list, list):
             item_list = []
         if not isinstance(vendor_list, list):
             vendor_list = []
+        if not isinstance(store_item_list, list):
+            store_item_list = []
+        if not isinstance(vendor_store_list, list):
+            vendor_store_list = []
+        if not isinstance(store_inventory_list, list):
+            store_inventory_list = []
 
-        results = {"item_list": item_list, "vendor_list": vendor_list}
+        results = {
+            "item_list": item_list,
+            "vendor_list": vendor_list,
+            "store_item_list": store_item_list,
+            "vendor_store_list": vendor_store_list,
+            "store_inventory_list": store_inventory_list
+        }
     except Exception as e:
-        results = {"error": str(e), "item_list": [], "vendor_list": []}
+        results = {
+            "error": str(e),
+            "item_list": [],
+            "vendor_list": [],
+            "store_item_list": [],
+            "vendor_store_list": [],
+            "store_inventory_list": []
+        }
     finally:
         cur.close()
     return render_template("product_management.html", data=results)
