@@ -4,41 +4,210 @@
    <title>Database Query</title>
  </head>
  <body>
-   <h1>Query the Database</h1>
-   <form action="/query" method="post" id="queryForm">
-    <textarea name="query" rows="4" cols="50" placeholder="Enter SQL query..."></textarea>
-    <br>
-    <button type="submit">Run Query</button>
-  </form>
+   <table width="100%">
+     <tr>
+       <td width="50%" valign="top">
+         <h1>Query the Database</h1>
+         <form action="/query" method="post" id="queryForm">
+          <textarea name="query" rows="4" cols="50" placeholder="Enter SQL query..."></textarea>
+          <br>
+          <button type="submit">Run Query</button>
+         </form>
 
-  <h2>Results:</h2>
-  {% if data %}
-      {% if data is iterable and data is not string %}
-          {% if data|length > 0 %}
-              <table border="1" cellpadding="5">
-                  <tr>
-                      {% for key in data[0].keys() %}
-                          <th>{{ key }}</th>
-                      {% endfor %}
-                  </tr>
-                  {% for row in data %}
-                      <tr>
-                          {% for value in row.values() %}
-                              <td>{{ value }}</td>
-                          {% endfor %}
-                      </tr>
-                  {% endfor %}
-              </table>
-          {% else %}
-              <p>No rows returned.</p>
-          {% endif %}
-      {% else %}
-          <p>{{ data }}</p>
-      {% endif %}
-  {% else %}
-      <p>No data returned.</p>
-  {% endif %}
+         <h2>Results:</h2>
+         {% if data %}
+             {% if data is iterable and data is not string %}
+                 {% if data|length > 0 %}
+                     <table border="1" cellpadding="5">
+                         <tr>
+                             {% for key in data[0].keys() %}
+                                 <th>{{ key }}</th>
+                             {% endfor %}
+                         </tr>
+                         {% for row in data %}
+                             <tr>
+                                 {% for value in row.values() %}
+                                     <td>{{ value }}</td>
+                                 {% endfor %}
+                             </tr>
+                         {% endfor %}
+                     </table>
+                 {% else %}
+                     <p>No rows returned.</p>
+                 {% endif %}
+             {% else %}
+                 <p>{{ data }}</p>
+             {% endif %}
+         {% else %}
+             <p>No data returned.</p>
+         {% endif %}
+       </td>
+       <td width="50%" valign="top">
+         <h1 align="center">Example Queries</h1>
+         <table width="100%" cellpadding="5">
+           <tr>
+             <td>
+<b>Create ItemSalesSummary View</b><br>
+<pre style="
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+">
+<code>
+CREATE VIEW ItemSalesSummary AS
+SELECT i.iId, i.Iname, SUM(o.Amount) AS TotalRevenue, SUM(oi.Icount) AS TotalQuantitySold
+FROM order_item oi
+JOIN item i ON oi.iId = i.iId
+JOIN order_ o ON oi.oId = o.oId
+GROUP BY i.iId, i.Iname;
+</code>
+</pre>
+             </td>
+           </tr>
+           <tr>
+             <td>
+<b>Create TopLoyalCustomers View</b><br>
+<pre style="
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+">
+<code>
+CREATE VIEW TopLoyalCustomers AS
+SELECT cId AS "cId", Cname AS "Cname", LoyaltyScore AS "LoyaltyScore"
+FROM customer ORDER BY LoyaltyScore DESC LIMIT 10;
+</code>
+</pre>
+             </td>
+           </tr>
+           <tr>
+             <td>
+<b>Retrieve Top 3 Items with Highest Revenue</b><br>
+<pre style="
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+">
+<code>
+SELECT iname AS "Item Name", totalrevenue AS "Total Revenue"
+FROM ItemSalesSummary ORDER BY totalrevenue DESC LIMIT 3
+</code>
+</pre>
+             </td>
+           </tr>
+           <tr>
+             <td>
+<b>Retrieve Items that Sold More than 50 Total Units</b><br>
+<pre style="
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+">
+<code>
+SELECT iname AS "Item Name", totalquantitysold AS "Total Quantity Sold"
+FROM ItemSalesSummary WHERE totalquantitysold > 50
+</code>
+</pre>
+             </td>
+           </tr>
+           <tr>
+             <td>
+<b>Retrieve Most Loyal Customer</b><br>
+<pre style="
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+">
+<code>
+SELECT "Cname" AS "Customer Name", "LoyaltyScore" AS "Loyalty Score"
+FROM TopLoyalCustomers ORDER BY "LoyaltyScore" DESC LIMIT 1
+</code>
+</pre>
+             </td>
+           </tr>
+           <tr>
+             <td>
+<b>Retrieve Customers with Loyalty Score Between 4 and 5</b><br>
+<pre style="
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+">
+<code>
+SELECT "Cname" AS "Customer Name", "LoyaltyScore" AS "Loyalty Score"
+FROM TopLoyalCustomers WHERE "LoyaltyScore" >=4 AND "LoyaltyScore" <= 5
+</code>
+</pre>
+             </td>
+           </tr>
+           <tr>
+             <td>
+<b>Calculate Total Revenue Across all Items</b><br>
+<pre style="
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+">
+<code>
+SELECT SUM("totalrevenue") AS "Total Revenue" FROM ItemSalesSummary
+</code>
+</pre>
+             </td>
+           </tr>
+         </table>
+       </td>
+     </tr>
+   </table>
 
-<a href="/">Product Management</a>
+   <a href="/">Product Management</a>
 </body>
 </html>
