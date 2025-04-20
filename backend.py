@@ -201,7 +201,34 @@ def link_vendor_item():
 @app.route("/delete_item", methods=["POST"])
 def delete_item():
     item_id = request.form.get("item_id")
-    return f"Deleting {item_id}"
+    cur = conn.cursor()
+    # Delete the item and any vendor-item links
+    try:
+        # Can't directly delete the item because of referential integrity constraints
+        cur.execute("BEGIN")
+        # First delete the entry in STORE_ITEM
+        cur.execute("DELETE FROM STORE_ITEM WHERE iid = %s", (item_id,))
+        # Then delete the item itself
+        cur.execute("DELETE FROM ITEM WHERE iid = %s", (item_id,))
+        # Delete the entry in VENDOR_STORE
+        cur.execute("DELETE FROM VENDOR_STORE WHERE vid = 201 AND sid = 1")
+        # Finally, delete the vendor
+        cur.execute("DELETE FROM VENDOR WHERE vid = 201")
+        conn.commit()
+        return redirect(url_for("home"))
+        
+    except Exception as e:
+        # Rollback on error
+        conn.rollback()
+        return render_template("product_management.html", 
+                            data={"error": f"Error deleting item: {str(e)}", 
+                                 "item_list": [], 
+                                 "vendor_list": [],
+                                 "store_item_list": [],
+                                 "vendor_store_list": [],
+                                 "store_inventory_list": []})
+    finally:
+        cur.close()
 
 if __name__ == "__main__":
     app.run(debug=True)
