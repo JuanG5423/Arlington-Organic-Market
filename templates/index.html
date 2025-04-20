@@ -17,7 +17,7 @@
          <h2>Results:</h2>
          {% if data %}
              {% if data is iterable and data is not string %}
-                 {% if data|length > 0 %}
+                 {% if data|length > 0 and data[0] is defined %}
                      <table border="1" cellpadding="5">
                          <tr>
                              {% for key in data[0].keys() %}
@@ -33,7 +33,7 @@
                          {% endfor %}
                      </table>
                  {% else %}
-                     <p>No rows returned.</p>
+                     <p>Query executed successfully.</p>
                  {% endif %}
              {% else %}
                  <p>{{ data }}</p>
