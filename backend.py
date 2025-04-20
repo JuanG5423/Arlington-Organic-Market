@@ -7,6 +7,7 @@ import json
 app = Flask(__name__)
 CORS(app) 
 
+
 conn = psycopg2.connect(
     host="localhost",
     database="Organic Market DB",
@@ -16,7 +17,29 @@ conn = psycopg2.connect(
 
 @app.route("/")
 def home():
-    return render_template("product_management.html")
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM ITEM")
+        item_columns = [desc[0] for desc in cur.description]
+        item_rows = cur.fetchall()
+        item_list = [dict(zip(item_columns, row)) for row in item_rows]
+
+        cur.execute("SELECT * FROM VENDOR")
+        vendor_columns = [desc[0] for desc in cur.description]
+        vendor_rows = cur.fetchall()
+        vendor_list = [dict(zip(vendor_columns, row)) for row in vendor_rows]
+
+        if not isinstance(item_list, list):
+            item_list = []
+        if not isinstance(vendor_list, list):
+            vendor_list = []
+
+        results = {"item_list": item_list, "vendor_list": vendor_list}
+    except Exception as e:
+        results = {"error": str(e), "item_list": [], "vendor_list": []}
+    finally:
+        cur.close()
+    return render_template("product_management.html", data=results)
 
 @app.route("/index.html")
 def index():
@@ -54,6 +77,44 @@ def query():
         return jsonify({"error": str(e)}), 400
     finally:
         cur.close()
+    
+@app.route("/add_product", methods=["POST"])
+def add_product():
+    id = request.form.get("product_id")
+    name = request.form.get("product_name")
+    cost = request.form.get("product_cost")
+    category = request.form.get("product_category")
+    cur = conn.cursor()
+    try:
+        sql = "INSERT INTO ITEM (iid, iname, sprice, category) VALUES (%s, %s, %s, %s) "
+        cur.execute(sql, (id, name, cost, category))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return render_template("product_management.html", data={"error":str(e)})
+    finally:
+        cur.close()
+    return redirect(url_for("home"))
+
+@app.route("/add_vendor", methods=["POST"])
+def add_vendor():
+    id = request.form.get("vendor_id")
+    name = request.form.get("vendor_name")
+    street = request.form.get("vendor_street")
+    city = request.form.get("vendor_city")
+    state = request.form.get("vendor_state")
+    zipcode = request.form.get("vendor_zip")
+    cur = conn.cursor()
+    try:
+        sql = "INSERT INTO VENDOR (vid, vname, street, city, stateab, zipcode) VALUES (%s, %s, %s, %s, %s, %s) "
+        cur.execute(sql, (id, name, street, city, state, zipcode))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return render_template("product_management.html", data={"error":str(e)})
+    finally:
+        cur.close()
+    return redirect(url_for("home"))
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+ <html>
+ <head>
+   <title>Product Management</title>
+ </head>
+ <body>
+   <h1>Add Product</h1>
+   <form action="/add_product" method="post" id="add_product_form">
+    <textarea name="product_id" rows="1" cols="15" placeholder="Item ID"></textarea>
+    <textarea name="product_name" rows="1" cols="15" placeholder="Product Name"></textarea>
+    <textarea name="product_cost" rows="1" cols="15" placeholder="Cost"></textarea>
+    <textarea name="product_category" rows="1" cols="15" placeholder="Category"></textarea>
+    <br>
+    <button type="submit">Add Product</button>
+    <br>
+  </form>
+
+  <h2>Items in Database:</h2>
+{% if data %}
+    {% if data.error %}
+        <p style="color:red">{{ data.error }}</p>
+    {% elif data.item_list %}
+        <table border="1" cellpadding="5">
+            <tr>
+                {% for key in data.item_list[0].keys() %}
+                    <th>{{ key }}</th>
+                {% endfor %}
+            </tr>
+            {% for row in data.item_list %}
+                <tr>
+                    {% for value in row.values() %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No items to show.</p>
+    {% endif %}
+{% else %}
+    <p>No data to show.</p>
+{% endif %}
+
+  <h1>Add Vendor</h1>
+   <form action="/add_vendor" method="post" id="add_vendor_form">
+    <textarea name="vendor_id" rows="1" cols="15" placeholder="Vendor ID"></textarea>
+    <textarea name="vendor_name" rows="1" cols="15" placeholder="Vendor Name"></textarea>
+    <textarea name="vendor_street" rows="1" cols="15" placeholder="Street"></textarea>
+    <textarea name="vendor_city" rows="1" cols="15" placeholder="City"></textarea>
+    <textarea name="vendor_state" rows="1" cols="15" placeholder="State"></textarea>
+    <textarea name="vendor_zip" rows="1" cols="15" placeholder="Zip Code"></textarea>
+    <br>
+    <button type="submit">Add Vendor</button>
+    <br>
+  </form>
+
+<h2>Vendors in Database:</h2>
+{% if data %}
+    {% if data.error %}
+        <p style="color:red">{{ data.error }}</p>
+    {% elif data.vendor_list %}
+        <table border="1" cellpadding="5">
+            <tr>
+                {% for key in data.vendor_list[0].keys() %}
+                    <th>{{ key }}</th>
+                {% endfor %}
+            </tr>
+            {% for row in data.vendor_list %}
+                <tr>
+                    {% for value in row.values() %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No vendors to show.</p>
+    {% endif %}
+{% else %}
+    <p>No data to show.</p>
+{% endif %}
+
+  <a href="index.html">Or directly query the database</a>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+ <html>
+ <head>
+   <title>Database Query</title>
+ </head>
+ <body>
+   <h1>Query the Database</h1>
+   <form action="/query" method="post" id="queryForm">
+    <textarea name="query" rows="4" cols="50" placeholder="Enter SQL query..."></textarea>
+    <br>
+    <button type="submit">Run Query</button>
+  </form>
+
+  <h2>Results:</h2>
+  {% if data %}
+      {% if data is iterable and data is not string %}
+          <ul>
+              {% for row in data %}
+                  <li>
+                      <ul>
+                          {% for key, value in row.items() %}
+                              <li><strong>{{ key }}:</strong> {{ value }}</li>
+                          {% endfor %}
+                      </ul>
+                  </li>
+              {% endfor %}
+          </ul>
+      {% else %}
+          <p>{{ data }}</p>
+      {% endif %}
+  {% else %}
+      <p>No data returned.</p>
+  {% endif %}
+</body>
+</html>
