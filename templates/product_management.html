@@ -96,7 +96,6 @@
    <button type="submit">Link Vendor to Item</button>
    <br>
  </form>
-  <a href="index.html">Or directly query the database</a>
 
   <h2>Store Items:</h2>
 {% if data %}
@@ -175,6 +174,18 @@
 {% else %}
     <p>No data to show.</p>
 {% endif %}
+
+<h1>Update Item Price</h1>
+<form action="/update_item_price" method="post" id="update_item_price_form">
+ <textarea name="item_id" rows="1" cols="15" placeholder="Item ID"></textarea>
+ <textarea name="new_price" rows="1" cols="15" placeholder="New Price"></textarea>
+ <br>
+ <button type="submit">Update Price</button>
+ <br>
+</form>
+
+<a href="index.html">Or directly query the database</a>
+
 
 </body>
 </html>

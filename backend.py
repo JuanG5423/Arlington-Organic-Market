@@ -230,6 +230,23 @@ def delete_item():
     finally:
         cur.close()
 
+@app.route("/update_item_price", methods=["POST"])
+def update_item_price():
+    item_id = request.form.get("item_id")
+    new_price = request.form.get("new_price")
+
+    cur = conn.cursor()
+    try:
+        cur.execute("UPDATE ITEM SET sprice = %s WHERE iid = %s", (new_price, item_id,))
+        conn.commit()
+        return redirect(url_for("home"))
+    except Exception as e:
+        conn.rollback()
+        return render_template("product_management.html", 
+                            data={"error": f"Error updating item: {str(e)}", 
+                                 "item_list": []})
+    finally:
+        cur.close()
 if __name__ == "__main__":
     app.run(debug=True)
 
